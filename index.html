@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                /* 缩放比例 */
+                /* transform: scale(0.6); */
+                transform-origin: 0 0;
+                font-family: 'OPPOSans';
+            }
+            .background {
+                background-image: url('/imgs/avatar.jpg');
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+                height: 1080px;
+                width: 1920px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: -1000;
+                filter: blur(40px);
+            }
+            .background-mask {
+                background-color: #00000055;
+                height: 1080px;
+                width: 1920px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: -999;
+            }
+            .mahojin {
+                background-image: url('/imgs/mahojin.png');
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+                position: absolute;
+                top: 107px;
+                left: 107px;
+                width: 494px;
+                height: 494px;
+                z-index: -998;
+            }
+            .avatar-mask {
+                background-color: #000000bb;
+                border-radius: 50%;
+                position: absolute;
+                top: 157px;
+                left: 157px;
+                width: 394px;
+                height: 394px;
+                z-index: -997;
+            }
+            .avatar {
+                background-image: url('/imgs/avatar.jpg');
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+                border-radius: 50%;
+                position: absolute;
+                top: 162px;
+                left: 162px;
+                width: 384px;
+                height: 384px;
+                z-index: -996;
+            }
+            .total-days {
+                position: absolute;
+                top: 640px;
+                left: 162px;
+                font-size: 40px;
+                /* font-weight: bold; */
+                color: white;
+                z-index: -995;
+            }
+            .consecutive-days {
+                position: absolute;
+                top: 700px;
+                left: 162px;
+                font-size: 40px;
+                /* font-weight: bold; */
+                color: white;
+                z-index: -995;
+            }
+            .reward {
+                position: absolute;
+                /* top: 730px; */
+                left: 162px;
+                font-size: 35px;
+                /* font-weight: bold; */
+                color: white;
+            }
+            .reward p {
+                margin-bottom: 15px;
+            }
+            .reward img {
+                margin-right: 4px;
+                height: 1em;
+                transform: scale(1.3) translateY(6px);
+            }
+            .username {
+                width: 1212px;
+                position: absolute;
+                top: 187px;
+                left: 708px;
+                font-size: 60px;
+                /* font-weight: bold; */
+                color: white;
+            }
+            .user-info {
+                width: 1212px;
+                position: absolute;
+                top: 300px;
+                left: 708px;
+                font-size: 30px;
+                /* font-weight: bold; */
+                color: white;
+            }
+            .user-info p,
+            .user-info span {
+                margin-bottom: 15px;
+            }
+            .bar-bg {
+                width: 50%;
+                height: 8px;
+                /* border: 1px solid #00000055; */
+                background-color: #00000055;
+                border-radius: 30px;
+            }
+            .bar {
+                margin-top: 8px;
+                width: 25%;
+                height: 8px;
+                background-color: #80d0f1;
+                text-align: center;
+                color: white;
+                line-height: 23px;
+                font-size: 15px;
+                border-radius: 30px;
+            }
+            .yiyan {
+                position: absolute;
+                top: 601px;
+                left: 708px;
+                right: 162px;
+                width: 1045px;
+                height: 390px;
+                color: white;
+                background-color: #00000030;
+                border-radius: 30px;
+                z-index: -998;
+            }
+            .yiyan-content {
+                margin: 50px;
+                height: 290px;
+                font-size: 35px;
+                overflow-y: hidden;
+                text-overflow: ellipsis;
+                text-align: justify;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div class="background"></div>
+            <div class="background-mask"></div>
+            <div class="mahojin"></div>
+            <div class="avatar-mask"></div>
+            <div class="avatar"></div>
+            <div class="total-days">共签到 {{total_signin_days}} 天</div>
+            <div class="consecutive-days" v-if="consecutive_days > 0">连续签到 {{consecutive_days}} 天</div>
+            <div class="reward" :style="{top: reward_top_pos+'px'}">
+                <p>经验 +3</p>
+                <p>
+                    <img src="/imgs/原石.png" />
+                    +3
+                </p>
+                <p>
+                    <img src="/imgs/纠缠之缘.png" />
+                    +1
+                </p>
+            </div>
+            <div class="username" v-text="username"></div>
+            <div class="user-info">
+                <p>QQ: {{qq}}</p>
+                <span>
+                    等级经验: Lv{{level}}&nbsp;&nbsp;{{exp[0]}} / {{exp[1]}}
+                    <div class="bar-bg">
+                        <div class="bar" :style="'width: ' + exp[0] / exp[1] * 100 + '%;'"></div>
+                    </div>
+                </span>
+            </div>
+            <div class="yiyan">
+                <div class="yiyan-content">
+                    <p>{{yiyan}}</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    reward_top_pos: 730,
+                    username: 'Red_lnn',
+                    qq: 731347477,
+                    level: 6,
+                    exp: [114514, 191800],
+                    total_signin_days: 20,
+                    consecutive_days: 10,
+                    yiyan: '近日，有玩家发现在某平台的屏蔽词功能把“杀”字变成了“口”，可能是为了营造和谐的网络空间，把杀这样暴力的词强行改为口，结果改完效果很好，一点也不暴力了，但这气氛变得有点奇怪了！近日，有玩家发现在某平台的屏蔽词功能把“杀”字变成了“口”，可能是为了营造和谐的网络空间，把杀这样暴力的词强行改为口，结果改完效果很好，一点也不暴力了，但这气氛变得有点奇怪了！',
+                }
+            },
+            mounted() {
+                this.is_signin_consecutively()
+            },
+            methods: {
+                is_signin_consecutively() {
+                    if (this.consecutive_days > 0) {
+                        this.reward_top_pos = 730 + 50
+                    } else {
+                        this.reward_top_pos = 730
+                    }
+                },
+            },
+        }).mount('#app')
+    </script>
+</html>
