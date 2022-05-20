@@ -17,12 +17,7 @@ def main():
     # 查询用户信息
     # result: Optional[tuple[UserInfo]] = await Database.select_first(select(UserInfo).where(UserInfo.qq == member.id))
     result: Optional[tuple[UserInfo]] = (UserInfo(qq='10086'),)
-    if result is None:
-        # user: UserInfo = UserInfo(qq=str(member.id))
-        user: UserInfo = UserInfo(qq=str(10086))
-    else:
-        user: UserInfo = result[0]
-
+    user: UserInfo = UserInfo(qq=str(10086)) if result is None else result[0]
     # 判断时间戳是不是今天
     if time.localtime(user.last_signin_time).tm_yday == time.localtime().tm_yday:
         # await app.sendMessage(group, MessageChain.create(Plain(f'你今天已经签到过了哦~')), quote=source)
